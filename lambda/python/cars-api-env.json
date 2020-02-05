@@ -1,0 +1,11 @@
+{
+  "ListBucketFunction": {
+    "BUCKET": "tsv-bdx-demo-car"
+  },
+  "ListCarsFunction": {
+    "CONTEXT": "local"
+  },
+  "GetCarFunction": {
+    "CONTEXT": "local"
+  }
+}

@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Car API
+
+###############################################################################
+### Resources
+###############################################################################
+Resources:
+
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub "tsv-bdx-demo"
+      EndpointConfiguration: REGIONAL
+      StageName: "dev"
+      TracingEnabled: true
+
+  ListCarsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "List all cars"
+      CodeUri: src/main/
+      Handler: handler.car_handler.list_cars
+      Runtime: python3.7
+      FunctionName: "tsv-bdx-demo-list-cars"
+      Timeout: 30
+      MemorySize: 128
+      Tracing: Active
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          CONTEXT: !Ref 'AWS::NoValue'
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /cars
+            Method: GET
+            RestApiId: !Ref Api
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+
+  GetCarFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Get car by id"
+      CodeUri: src/main/
+      Handler: handler.car_handler.get_car
+      Runtime: python3.7
+      FunctionName: "tsv-bdx-demo-get-car"
+      Timeout: 30
+      MemorySize: 128
+      Tracing: Active
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          CONTEXT: !Ref 'AWS::NoValue'
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /cars/car/{id}
+            Method: GET
+            RestApiId: !Ref Api
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+
+  ListBucketFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "List all objects inside cars bucket"
+      CodeUri: src/main/
+      Handler: handler.car_handler.list_bucket
+      Runtime: python3.7
+      FunctionName: "tsv-bdx-demo-list-cars-bucket"
+      Timeout: 30
+      MemorySize: 128
+      Tracing: Active
+      Environment:
+        Variables:
+          BUCKET: !Ref Bucket
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /cars/files
+            Method: GET
+            RestApiId: !Ref Api
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref Bucket
+
+  Bucket:
+    DeletionPolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "tsv-bdx-demo-car"
+
+  Table:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: "tsv-bdx-demo-car"
+
+###############################################################################
+### Output
+###############################################################################
+Outputs:
+  URL:
+    Description: "API Gateway origin endpoint URL"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev"
+  API:
+    Description: "API Ref"
+    Value: !Ref Api
+
+  ListCarsFunctionArn:
+    Description: "ListCarsFunction Lambda function ARN"
+    Value: !GetAtt ListCarsFunction.Arn
+
+  ListCarsFunctionIamRoleArn:
+    Description: "Implicit IAM Role created for ListCarsFunction Lambda function"
+    Value: !GetAtt ListCarsFunction.Arn
+
+  GetCarFunctionArn:
+    Description: "GetCarFunction Lambda function ARN"
+    Value: !GetAtt GetCarFunction.Arn
+
+  GetCarFunctionIamRoleArn:
+    Description: "Implicit IAM Role created for GetCarFunction Lambda function"
+    Value: !GetAtt GetCarFunction.Arn
