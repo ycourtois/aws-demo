@@ -10,8 +10,8 @@ dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 
 TABLE_NAME = 'tsv-bdx-demo-car'
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
 
 def insert_cars():

@@ -3,6 +3,34 @@ Transform: AWS::Serverless-2016-10-31
 Description: Car API
 
 ###############################################################################
+### Output
+###############################################################################
+Outputs:
+  URL:
+    Description: "API Gateway origin endpoint URL"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev"
+  API:
+    Description: "API Ref"
+    Value: !Ref Api
+
+  ListCarsFunctionArn:
+    Description: "ListCarsFunction Lambda function ARN"
+    Value: !GetAtt ListCarsFunction.Arn
+
+  ListCarsFunctionIamRoleArn:
+    Description: "Implicit IAM Role created for ListCarsFunction Lambda function"
+    Value: !GetAtt ListCarsFunction.Arn
+
+  GetCarFunctionArn:
+    Description: "GetCarFunction Lambda function ARN"
+    Value: !GetAtt GetCarFunction.Arn
+
+  GetCarFunctionIamRoleArn:
+    Description: "Implicit IAM Role created for GetCarFunction Lambda function"
+    Value: !GetAtt GetCarFunction.Arn
+
+
+###############################################################################
 ### Resources
 ###############################################################################
 Resources:
@@ -74,7 +102,7 @@ Resources:
       CodeUri: src/main/
       Handler: handler.car_handler.list_bucket
       Runtime: python3.7
-      FunctionName: "tsv-bdx-demo-list-cars-bucket"
+      FunctionName: "tsv-bdx-demo-list-cars-files"
       Timeout: 30
       MemorySize: 128
       Tracing: Active
@@ -103,29 +131,4 @@ Resources:
     Properties:
       TableName: "tsv-bdx-demo-car"
 
-###############################################################################
-### Output
-###############################################################################
-Outputs:
-  URL:
-    Description: "API Gateway origin endpoint URL"
-    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev"
-  API:
-    Description: "API Ref"
-    Value: !Ref Api
 
-  ListCarsFunctionArn:
-    Description: "ListCarsFunction Lambda function ARN"
-    Value: !GetAtt ListCarsFunction.Arn
-
-  ListCarsFunctionIamRoleArn:
-    Description: "Implicit IAM Role created for ListCarsFunction Lambda function"
-    Value: !GetAtt ListCarsFunction.Arn
-
-  GetCarFunctionArn:
-    Description: "GetCarFunction Lambda function ARN"
-    Value: !GetAtt GetCarFunction.Arn
-
-  GetCarFunctionIamRoleArn:
-    Description: "Implicit IAM Role created for GetCarFunction Lambda function"
-    Value: !GetAtt GetCarFunction.Arn

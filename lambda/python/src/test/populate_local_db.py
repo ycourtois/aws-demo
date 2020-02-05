@@ -11,8 +11,7 @@ dynamodb = boto3.resource('dynamodb', region_name='eu-west-1', endpoint_url="htt
 TABLE_NAME = 'cars'
 
 logger = logging.getLogger()
-#logging.basicConfig(level=logging.DEBUG)
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 def insert_cars():
@@ -38,7 +37,7 @@ def create_table():
         AttributeDefinitions=[
             {
                 'AttributeName': 'id',
-                'AttributeType': 'N'
+                'AttributeType': 'S'
             }
         ],
         BillingMode='PAY_PER_REQUEST'
