@@ -8,14 +8,14 @@ from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-1', endpoint_url="http://localhost:8000")
 
-TABLE_NAME = 'cars'
+TABLE = 'cars'
 
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 
 
 def insert_cars():
-    table = dynamodb.Table(TABLE_NAME)
+    table = dynamodb.Table(TABLE)
     with open("cars.json") as json_file:
         cars = json.load(json_file)
         for car in cars:
@@ -27,7 +27,7 @@ def insert_cars():
 
 def create_table():
     table = dynamodb.create_table(
-        TableName=TABLE_NAME,
+        TableName=TABLE,
         KeySchema=[
             {
                 'AttributeName': 'id',
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         create_table()
     except ClientError as ce:
         if ce.response['Error']['Code'] == 'ResourceInUseException':
-            logger.warning(f"Table [{TABLE_NAME}] may already exist, skipping ...")
+            logger.warning(f"Table [{TABLE}] may already exist, skipping ...")
         else:
             logger.error(ce)
 
