@@ -20,7 +20,7 @@ sam deploy
 
 OR
 
-Update BUCKET_ARTIFACT variable.
+Update BUCKET_ARTIFACT variable accordingly.
 
 ```
 PROJECT=tsv-bdx-demo
