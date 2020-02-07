@@ -8,15 +8,23 @@ Create an S3 bucket to store your artifacts.
 
 Once done, update BUCKET_ARTIFACT variable.
 
+Build the solution.
+
 ```
 sam build
 ```
+
+Create an S3 bucket to store your artifacts.
+
+Update `s3_bucket` variable inside `samconfig.toml` file.
 
 ```
 sam deploy
 ```
 
 OR
+
+Update BUCKET_ARTIFACT variable accordingly.
 
 ```
 BUCKET_ARTIFACT=tsv-bdx-demo

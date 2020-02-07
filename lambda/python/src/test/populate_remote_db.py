@@ -8,7 +8,7 @@ import boto3
 
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 
-TABLE = os.getenv('TABLE', default='tsv-bdx-demo-car')
+TABLE = os.getenv('TABLE', default='tsv-bdx-demo-cars')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()

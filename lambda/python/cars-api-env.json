@@ -1,11 +1,11 @@
 {
   "ListBucketFunction": {
-    "BUCKET": "tsv-bdx-demo-car"
+    "BUCKET": "tsv-bdx-demo-cars"
   },
   "ListCarsFunction": {
-    "TABLE": "tsv-bdx-demo-car"
+    "TABLE": "tsv-bdx-demo-cars"
   },
   "GetCarFunction": {
-    "TABLE": "tsv-bdx-demo-car"
+    "TABLE": "tsv-bdx-demo-cars"
   }
 }

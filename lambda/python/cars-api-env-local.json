@@ -1,6 +1,6 @@
 {
   "ListBucketFunction": {
-    "BUCKET": "tsv-bdx-demo-car"
+    "BUCKET": "tsv-bdx-demo-cars"
   },
   "ListCarsFunction": {
     "CONTEXT": "local"
