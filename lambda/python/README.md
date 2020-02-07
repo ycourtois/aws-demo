@@ -9,15 +9,30 @@ Create an S3 bucket to store your artifacts.
 Once done, update BUCKET_ARTIFACT variable.
 
 ```
+sam build
+```
+
+```
+sam deploy
+```
+
+OR
+
+```
 BUCKET_ARTIFACT=tsv-bdx-demo
 STACK_NAME=tsv-bdx-demo-cars
 
-sam build
 sam package --output-template-file sam.packaged.yaml --s3-bucket ${BUCKET_ARTIFACT} --s3-prefix sam
 sam deploy --template-file sam.packaged.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM
 ```
 
 ## Local Testing
+
+### With remote DynamoDB database
+
+`sam local start-api -n cars-api-env.json`
+
+### With local DynamoDB database
 
 Create a dedicated docker network to run our application.
 
@@ -27,12 +42,40 @@ Launch local dynamodb database.
 
 `docker run --name dynamodb --network-alias=dynamodb --network sam-local -p 8000:8000 amazon/dynamodb-local`
 
-`sam local start-api --docker-network sam-local -n cars-api-env.json`
+`sam local start-api --docker-network sam-local -n cars-api-env-local.json`
 
 ## Local Debug
 
-Remote debug does not work with PyCharm.
-Use VSCode : https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging-python.html
+With PyCharm you need to run the remote IDE configuration first before running your python script while
+for Visual Studio Code you run it after your python script.
+
+You will find explanations below.
+
+### With PyCharm
+
+1. Install debug dependency
+
+    In order to proceed to remote debug, you need an external dependency named `pydevd_pycharm`
+    
+    Add `pydevd_pycharm` inside `requirements.txt`
+    
+    Add the following instructions inside your function to wait for remote connection.
+    
+    ```
+    pydevd_pycharm.settrace("host.docker.internal", port=5590, stdoutToServer=True,
+                            stderrToServer=True)
+    ```
+
+2. Inside PyCharm, create a Python Remote Debug configuration and set locahost name to '0.0.0.0' and port to '5590'
+   Launch remote debug server
+
+3. Start api: `sam local start-api -n cars-api-env.json`
+
+4. Launch request: `http://localhost:3000/cars`
+
+### With VSCode
+
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging-python.html
 
 1. Install debug dependency
 
