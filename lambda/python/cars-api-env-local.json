@@ -3,9 +3,9 @@
     "BUCKET": "tsv-bdx-demo-car"
   },
   "ListCarsFunction": {
-    "TABLE": "tsv-bdx-demo-car"
+    "CONTEXT": "local"
   },
   "GetCarFunction": {
-    "TABLE": "tsv-bdx-demo-car"
+    "CONTEXT": "local"
   }
 }
