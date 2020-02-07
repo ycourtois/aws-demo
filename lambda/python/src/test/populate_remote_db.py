@@ -8,14 +8,14 @@ import boto3
 
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 
-TABLE_NAME = 'tsv-bdx-demo-car'
+TABLE = os.getenv('TABLE', default='tsv-bdx-demo-cars')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
 
 def insert_cars():
-    table = dynamodb.Table(TABLE_NAME)
+    table = dynamodb.Table(TABLE)
     with open("cars.json") as json_file:
         cars = json.load(json_file)
         for car in cars:

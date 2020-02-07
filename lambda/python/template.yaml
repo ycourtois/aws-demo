@@ -9,26 +9,6 @@ Outputs:
   URL:
     Description: "API Gateway origin endpoint URL"
     Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/dev"
-  API:
-    Description: "API Ref"
-    Value: !Ref Api
-
-  ListCarsFunctionArn:
-    Description: "ListCarsFunction Lambda function ARN"
-    Value: !GetAtt ListCarsFunction.Arn
-
-  ListCarsFunctionIamRoleArn:
-    Description: "Implicit IAM Role created for ListCarsFunction Lambda function"
-    Value: !GetAtt ListCarsFunction.Arn
-
-  GetCarFunctionArn:
-    Description: "GetCarFunction Lambda function ARN"
-    Value: !GetAtt GetCarFunction.Arn
-
-  GetCarFunctionIamRoleArn:
-    Description: "Implicit IAM Role created for GetCarFunction Lambda function"
-    Value: !GetAtt GetCarFunction.Arn
-
 
 ###############################################################################
 ### Resources
@@ -38,8 +18,7 @@ Resources:
   Api:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub "tsv-bdx-demo"
-      EndpointConfiguration: REGIONAL
+      Name: "tsv-bdx-demo-cars"
       StageName: "dev"
       TracingEnabled: true
 
@@ -48,7 +27,7 @@ Resources:
     Properties:
       Description: "List all cars"
       CodeUri: src/main/
-      Handler: handler.car_handler.list_cars
+      Handler: handler.cars_handler.list_cars
       Runtime: python3.7
       FunctionName: "tsv-bdx-demo-list-cars"
       Timeout: 30
@@ -57,7 +36,6 @@ Resources:
       Environment:
         Variables:
           TABLE: !Ref Table
-          CONTEXT: !Ref 'AWS::NoValue'
       Events:
         Get:
           Type: Api
@@ -74,7 +52,7 @@ Resources:
     Properties:
       Description: "Get car by id"
       CodeUri: src/main/
-      Handler: handler.car_handler.get_car
+      Handler: handler.cars_handler.get_car
       Runtime: python3.7
       FunctionName: "tsv-bdx-demo-get-car"
       Timeout: 30
@@ -83,7 +61,6 @@ Resources:
       Environment:
         Variables:
           TABLE: !Ref Table
-          CONTEXT: !Ref 'AWS::NoValue'
       Events:
         Get:
           Type: Api
@@ -100,7 +77,7 @@ Resources:
     Properties:
       Description: "List all objects inside cars bucket"
       CodeUri: src/main/
-      Handler: handler.car_handler.list_bucket
+      Handler: handler.cars_handler.list_bucket
       Runtime: python3.7
       FunctionName: "tsv-bdx-demo-list-cars-files"
       Timeout: 30
@@ -124,11 +101,11 @@ Resources:
     DeletionPolicy: Retain
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "tsv-bdx-demo-car"
+      BucketName: "tsv-bdx-demo-cars"
 
   Table:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      TableName: "tsv-bdx-demo-car"
+      TableName: "tsv-bdx-demo-cars"
 
 

@@ -4,11 +4,11 @@ import os
 
 import boto3
 
-from handler.utility import DecimalEncoder, my_json_converter
-from repository import car_repository
+from handler.utility import CustomJSONEncoder
+from repository import cars_repository
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
 
 
 def list_cars(event, context):
@@ -16,11 +16,11 @@ def list_cars(event, context):
     logger.info("Context is : %s", os.getenv('CONTEXT'))
 
     logger.info("Retrieving the car list ...")
-    result = car_repository.list_all()
+    result = cars_repository.list_all()
     result = sorted(result, key=lambda k: k['id'])
     return {
         "statusCode": 200,
-        "body": json.dumps(result, indent=4, cls=DecimalEncoder)
+        "body": json.dumps(result, indent=4, cls=CustomJSONEncoder)
     }
 
 
@@ -30,10 +30,10 @@ def get_car(event, context):
 
     car_id = event['pathParameters']['id']
     logger.info("Retrieving car with id %s ...", car_id)
-    result = car_repository.get(car_id)
+    result = cars_repository.get(car_id)
     return {
         "statusCode": 200,
-        "body": json.dumps(result, indent=4, cls=DecimalEncoder)
+        "body": json.dumps(result, indent=4, cls=CustomJSONEncoder)
     }
 
 
@@ -49,5 +49,5 @@ def list_bucket(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps(files, indent=4, default=my_json_converter)
+        "body": json.dumps(files, indent=4, cls=CustomJSONEncoder)
     }
