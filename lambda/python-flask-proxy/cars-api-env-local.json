@@ -1,0 +1,6 @@
+{
+  "Function": {
+    "BUCKET": "tsv-bdx-demo-car",
+    "CONTEXT": "local"
+  }
+}

@@ -1,0 +1,8 @@
+version=0.1
+[default.deploy.parameters]
+region = "eu-west-1"
+stack_name = "tsv-bdx-demo-cars-proxy"
+capabilities = "CAPABILITY_IAM"
+s3_bucket = "tsv-bdx-demo"
+s3_prefix = "sam/cars-proxy"
+parameter_overrides = "Project=\"tsv-bdx-demo\" Environment=\"dev\" ApiName=\"cars-proxy\" FlaskEnv=\"production\""

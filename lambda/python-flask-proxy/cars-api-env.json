@@ -1,0 +1,11 @@
+{
+  "Function": {
+    "PROJECT": "tsv-bdx-demo",
+    "APPLICATION": "cars-proxy",
+    "ENVIRONMENT": "dev",
+    "FLASK_ENV": "production",
+    "REGION": "eu-west-1",
+    "BUCKET": "tsv-bdx-demo-cars-proxy",
+    "TABLE": "tsv-bdx-demo-cars-proxy"
+  }
+}
