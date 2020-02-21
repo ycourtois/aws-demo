@@ -1,0 +1,2 @@
+ENVIRONMENT = "prod"
+DEBUG = 0

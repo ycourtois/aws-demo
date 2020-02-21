@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Car API
+
+###############################################################################
+### Parameters
+###############################################################################
+Parameters:
+  Project:
+    Type: String
+  Environment:
+    Description: "Environment type"
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+  ApiName:
+    Type: String
+  FlaskEnv:
+    Type: String
+
+
+###############################################################################
+### Output
+###############################################################################
+Outputs:
+  URL:
+    Description: "API Gateway origin endpoint URL"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/"
+
+###############################################################################
+### Resources
+###############################################################################
+Resources:
+
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub "${Project}-${ApiName}"
+      StageName: !Ref Environment
+      TracingEnabled: true
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub "${Project}-${ApiName} api"
+      CodeUri: src/main
+      Handler: handler.lambda_handler
+      Runtime: python3.7
+      FunctionName: !Sub "${Project}-${ApiName}"
+      Timeout: 30
+      MemorySize: 512
+      Tracing: Active
+      Environment:
+        Variables:
+          PROJECT: !Ref Project
+          ENVIRONMENT: !Ref Environment
+          APPLICATION: !Ref ApiName
+          FLASK_ENV: !Ref FlaskEnv
+          REGION: !Ref 'AWS::Region'
+          BUCKET: !Ref Bucket
+          TABLE: !Ref Table
+      Tags:
+        Name: !Sub "${Project}-${ApiName}"
+        Environment: !Ref Environment
+        Project: !Ref Project
+      Events:
+        ProxyGetRoot:
+          Type: Api
+          Properties:
+            Path: /cars
+            Method: GET
+            RestApiId: !Ref Api
+        ProxyGet:
+          Type: Api
+          Properties:
+            Path: /cars/{any+}
+            Method: GET
+            RestApiId: !Ref Api
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+        - S3ReadPolicy:
+            BucketName: !Ref Bucket
+
+  Bucket:
+    DeletionPolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${Project}-${ApiName}"
+
+  Table:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: !Sub "${Project}-${ApiName}"
